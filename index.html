@@ -7,6 +7,21 @@
       name="description"
       content="A century-old coffee farm producing high-quality Arabica beans in the foothills of Mullayyanagiri, with traceable micro-lots and wholesale sourcing for roasters and importers."
     />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_IN" />
+    <meta property="og:site_name" content="Vivalana Coffee" />
+    <meta property="og:title" content="Vivalana Coffee | Traceable Micro-Lots for Roasters" />
+    <meta
+      property="og:description"
+      content="Single-origin premium Arabica from the foothills of Mullayyanagiri. Explore 50 kg natural and washed lots for roasters and importers."
+    />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Vivalana Coffee | Traceable Micro-Lots for Roasters" />
+    <meta
+      name="twitter:description"
+      content="Single-origin premium Arabica from the foothills of Mullayyanagiri. Explore 50 kg natural and washed lots for roasters and importers."
+    />
     <title>Vivalana Coffee | Traceable Micro-Lots for Roasters</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -88,16 +103,16 @@
 
             <div class="mt-8 grid gap-4 sm:grid-cols-3">
               <div class="soft-card rounded-2xl border border-[#e3d2b9] p-4 shadow-sm">
-                <p class="text-2xl font-bold text-[#241912]">18</p>
-                <p class="mt-1 text-sm text-[#5f473d]">micro-lots</p>
+                <p class="text-2xl font-bold text-[#241912]">50 kg</p>
+                <p class="mt-1 text-sm text-[#5f473d]">Arabica naturals</p>
               </div>
               <div class="soft-card rounded-2xl border border-[#e3d2b9] p-4 shadow-sm">
-                <p class="text-2xl font-bold text-[#241912]">4.9/5</p>
-                <p class="mt-1 text-sm text-[#5f473d]">roaster retention</p>
+                <p class="text-2xl font-bold text-[#241912]">50 kg</p>
+                <p class="mt-1 text-sm text-[#5f473d]">Arabica washed</p>
               </div>
               <div class="soft-card rounded-2xl border border-[#e3d2b9] p-4 shadow-sm">
-                <p class="text-2xl font-bold text-[#241912]">120+</p>
-                <p class="mt-1 text-sm text-[#5f473d]">inquiry responses / season</p>
+                <p class="text-2xl font-bold text-[#241912]">Jan–Mar</p>
+                <p class="mt-1 text-sm text-[#5f473d]">harvest window</p>
               </div>
             </div>
           </div>
@@ -147,7 +162,7 @@
               <p class="text-xs font-semibold uppercase tracking-[0.22em] text-phibean-600">Forward contracts</p>
               <h2 class="mt-3 text-3xl font-bold text-[#281d18] sm:text-4xl">Harvests secured with intention and precision.</h2>
             </div>
-            <a href="#contact" class="inline-flex items-center justify-center rounded-full border border-[#cdb49d] bg-white/70 px-5 py-2.5 text-sm font-semibold text-[#2d221c] transition hover:bg-white">Reserve a lot</a>
+            <a id="reserveLotButton" href="#contact" class="inline-flex items-center justify-center rounded-full border border-[#cdb49d] bg-white/70 px-5 py-2.5 text-sm font-semibold text-[#2d221c] transition hover:bg-white">Reserve a lot</a>
           </div>
 
           <div class="grid gap-5 lg:grid-cols-2">
@@ -233,23 +248,49 @@
         </div>
       </section>
 
-      <section id="contact" class="py-16 sm:py-20">
+      <section class="bg-[#efe5d7] py-16 sm:py-20">
         <div class="section-shell">
-          <div class="grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.22em] text-phibean-200">Contact</p>
-              <h2 class="mt-3 text-3xl font-bold text-white sm:text-4xl">Start a conversation about your next coffee allocation.</h2>
-              <p class="mt-4 text-base leading-7 text-stone-300">Tell us about your buying timeline, desired lot characteristics, and preferred order size. We’ll respond with the most relevant options and a sourcing recommendation.</p>
+          <div class="rounded-[2rem] border border-[#d9c6aa] bg-gradient-to-r from-[#f9f5f0] to-[#efe0cb] p-6 sm:p-8 shadow-[0_18px_38px_rgba(84,67,49,0.08)]">
+            <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+              <div class="max-w-2xl">
+                <p class="text-xs font-semibold uppercase tracking-[0.22em] text-phibean-700">Visit the estate</p>
+                <h2 class="mt-3 text-3xl font-bold text-[#281d18] sm:text-4xl">See the lots, inspect the quality, and meet the harvest story in person.</h2>
+              </div>
+              <a id="visitButton" href="#contact" class="inline-flex items-center justify-center rounded-full bg-[#2a1d17] px-5 py-3 text-sm font-semibold text-[#f9f5f0] transition hover:bg-[#1d130f]">Schedule a visit</a>
+            </div>
+          </div>
+        </div>
+      </section>
 
-              <div class="mt-8 rounded-3xl border border-white/10 bg-white/5 p-5">
+      <section id="contact" class="bg-[#1b130f] py-16 sm:py-20">
+        <div class="section-shell">
+          <div class="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
+            <div class="space-y-5">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.22em] text-phibean-200">Contact</p>
+                <h2 class="mt-3 text-3xl font-bold text-white sm:text-4xl">Start a conversation about your next coffee allocation.</h2>
+              </div>
+
+              <p class="text-base leading-7 text-stone-300">Tell us about your buying timeline, desired lot characteristics, and preferred order size. We’ll respond with the most relevant options and a sourcing recommendation.</p>
+
+              <div class="rounded-[1.75rem] border border-[#d7c3a7]/20 bg-[#f8f2ea] p-5 text-[#2b1d17]">
+                <p class="text-xs font-semibold uppercase tracking-[0.22em] text-phibean-700">Current availability</p>
+                <ul class="mt-4 space-y-2 text-sm leading-6 text-[#4d392f]">
+                  <li>• Arabica naturals · 50 kg · 82+ potential</li>
+                  <li>• Arabica washed · 50 kg · 85+ potential</li>
+                  <li>• Harvest window: Jan–Mar</li>
+                </ul>
+              </div>
+
+              <div class="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
                 <p class="text-sm uppercase tracking-[0.2em] text-phibean-200">Quick response promise</p>
                 <p class="mt-4 text-3xl font-black text-white">Within 24 hours</p>
                 <p class="mt-2 text-sm text-stone-300">A sales specialist typically responds the same day for active procurement conversations.</p>
               </div>
             </div>
 
-            <div class="rounded-[2rem] border border-white/10 bg-stone-900 p-6 sm:p-8">
-              <form action="https://api.web3forms.com/submit" method="POST" class="space-y-5">
+            <div class="rounded-[2rem] border border-white/10 bg-stone-900 p-6 sm:p-8 shadow-[0_18px_38px_rgba(0,0,0,0.18)]">
+              <form id="roasterInquiryForm" action="https://api.web3forms.com/submit" method="POST" class="space-y-5">
                 <input type="hidden" name="access_key" value="c7b0c79b-661b-49fa-b307-0fa54f1c70b4" />
                 <input type="hidden" name="subject" value="Vivalana inquiry" />
                 <div>
@@ -270,6 +311,8 @@
                 <div>
                   <label for="interest" class="mb-2 block text-sm font-medium text-stone-200">Opportunity type</label>
                   <select id="interest" name="interest" class="w-full rounded-2xl border border-white/10 bg-stone-950 px-4 py-3 text-white focus:border-phibean-300 focus:outline-none">
+                    <option value="" selected>Select an opportunity type</option>
+                    <option value="Visit the estate">Visit the estate</option>
                     <option value="Micro-lot sourcing">Micro-lot sourcing</option>
                     <option value="Forward contract">Forward contract</option>
                     <option value="Sample request">Sample request</option>
@@ -283,6 +326,8 @@
                 </div>
 
                 <button type="submit" class="w-full rounded-full bg-phibean-300 px-6 py-3 text-sm font-semibold text-stone-950 transition hover:bg-phibean-200">Send inquiry</button>
+                <p id="formSuccessMessage" role="status" aria-live="polite" class="hidden rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">Thanks — we’ll be in touch shortly.</p>
+                <p id="formErrorMessage" role="alert" class="hidden rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">We couldn’t send your inquiry. Please try again.</p>
               </form>
             </div>
           </div>
@@ -316,7 +361,7 @@
 
       <div id="chatMessages" class="max-h-80 space-y-3 overflow-y-auto bg-stone-900 p-4 text-sm">
         <div class="max-w-[85%] rounded-2xl rounded-bl-md bg-white/5 p-3 text-stone-100">
-          Hello! I can help you with micro-lot availability, sample requests, or forward contract timing.
+          Hello! I can help with lot availability, samples, forward contracts, pricing, or arranging an estate visit.
         </div>
       </div>
 
@@ -324,6 +369,7 @@
         <button class="quick-reply rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-100">Micro-lot availability</button>
         <button class="quick-reply rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-100">Sample request</button>
         <button class="quick-reply rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-100">Forward contracts</button>
+        <button class="quick-reply rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-stone-100">Visit the estate</button>
       </div>
 
       <form id="chatForm" class="flex items-center gap-2 border-t border-white/10 bg-stone-950 p-3">
@@ -333,5 +379,80 @@
     </aside>
 
     <script src="assets/js/chat.js"></script>
+    <script>
+      const interestField = document.getElementById('interest');
+      const visitButton = document.getElementById('visitButton');
+      const reserveLotButton = document.getElementById('reserveLotButton');
+
+      const applyVisitInterest = function () {
+        if (interestField) {
+          interestField.value = 'Visit the estate';
+        }
+      };
+
+      if (visitButton) {
+        visitButton.addEventListener('click', function () {
+          applyVisitInterest();
+        });
+      }
+
+      if (reserveLotButton && interestField) {
+        reserveLotButton.addEventListener('click', function () {
+          interestField.value = 'Micro-lot sourcing';
+        });
+      }
+
+      window.addEventListener('pageshow', function () {
+        const form = document.getElementById('roasterInquiryForm');
+        const success = document.getElementById('formSuccessMessage');
+        const error = document.getElementById('formErrorMessage');
+        if (form) {
+          form.reset();
+        }
+        if (success) {
+          success.classList.add('hidden');
+        }
+        if (error) {
+          error.classList.add('hidden');
+        }
+      });
+
+      const form = document.getElementById('roasterInquiryForm');
+      const success = document.getElementById('formSuccessMessage');
+      const error = document.getElementById('formErrorMessage');
+
+      if (form && success && error) {
+        form.addEventListener('submit', async function (event) {
+          event.preventDefault();
+          const submitButton = form.querySelector('button[type="submit"]');
+          const originalButtonText = submitButton.textContent;
+          success.classList.add('hidden');
+          error.classList.add('hidden');
+          submitButton.disabled = true;
+          submitButton.textContent = 'Sending...';
+
+          try {
+            const response = await fetch(form.action, {
+              method: 'POST',
+              body: new FormData(form),
+              headers: { Accept: 'application/json' }
+            });
+            const result = await response.json();
+
+            if (!response.ok || result.success !== true) {
+              throw new Error('Inquiry submission failed');
+            }
+
+            form.reset();
+            success.classList.remove('hidden');
+          } catch (submissionError) {
+            error.classList.remove('hidden');
+          } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = originalButtonText;
+          }
+        });
+      }
+    </script>
   </body>
 </html>
