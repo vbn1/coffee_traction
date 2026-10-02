@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none" role="img" aria-labelledby="title">
+  <title id="title">PhiBean coffee bean and branch emblem</title>
+  <circle cx="48" cy="48" r="46" fill="#F8F7F2"/>
+  <circle cx="48" cy="48" r="45" stroke="#344537" stroke-width="1.5"/>
+
+  <g stroke="#344537" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M24 72c11-4 18-11 24-22 5-10 12-18 25-25" stroke-width="2"/>
+    <path d="M40 57c-9-1-15-7-17-17 9 1 15 7 17 17Z" fill="#71856A" stroke-width="1.5"/>
+    <path d="M48 46c-9-3-13-10-12-20 9 3 13 10 12 20Z" fill="#879778" stroke-width="1.5"/>
+    <path d="M57 37c-3-9 0-17 8-23 3 9 0 17-8 23Z" fill="#71856A" stroke-width="1.5"/>
+    <path d="M61 34c7-7 15-8 24-4-7 7-15 8-24 4Z" fill="#879778" stroke-width="1.5"/>
+    <path d="M34 65c-1-8-6-13-14-15" stroke-width="1"/>
+    <path d="M43 51c-5-6-7-12-7-19" stroke-width="1"/>
+    <path d="M57 37c0-6 3-12 8-18" stroke-width="1"/>
+    <path d="M68 31c5-2 10-2 15-1" stroke-width="1"/>
+  </g>
+
+  <path
+    d="M26 72c-1-6 4-11 12-14 8-4 17-4 23 0 6 4 7 10 3 15-5 6-13 9-21 8-9-1-16-4-17-9Z"
+    fill="#94784F"
+    stroke="#344537"
+    stroke-width="1.5"
+  />
+  <path d="M61 58c-8 5-13 10-16 15-2 4-3 7-3 10" stroke="#F8F7F2" stroke-linecap="round" stroke-width="2"/>
+  <path d="M25 79c8 4 16 6 24 6" stroke="#C8B38A" stroke-linecap="round" stroke-width="1.5"/>
+</svg>
