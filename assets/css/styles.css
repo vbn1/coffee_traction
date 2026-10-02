@@ -215,41 +215,6 @@ footer {
   background: #222d25;
 }
 
-.visitor-stats {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.6rem 1.5rem;
-  border-top: 1px solid rgba(248, 247, 242, 0.12);
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  color: rgba(248, 247, 242, 0.72);
-  font-size: 0.75rem;
-}
-
-.visitor-stats[hidden] {
-  display: none;
-}
-
-.visitor-stats > p {
-  margin: 0;
-}
-
-.visitor-indicator {
-  display: inline-block;
-  width: 0.45rem;
-  height: 0.45rem;
-  margin-right: 0.45rem;
-  border-radius: 50%;
-  background: #a6c28d;
-  box-shadow: 0 0 0 3px rgba(166, 194, 141, 0.12);
-}
-
-.visitor-stats-status {
-  color: rgba(248, 247, 242, 0.48);
-  font-size: 0.68rem;
-}
-
 #chatToggle {
   background: var(--forest);
   box-shadow: 0 8px 24px rgba(37, 53, 42, 0.2);

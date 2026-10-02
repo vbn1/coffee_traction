@@ -1,4 +1,35 @@
 const inquiryForm = document.getElementById('roasterInquiryForm');
+const opportunityField = inquiryForm.querySelector('[name="interest"]');
+const companyLabel = inquiryForm.querySelector('label[for="company"]');
+const companyField = inquiryForm.querySelector('[name="company"]');
+const volumeLabel = inquiryForm.querySelector('label[for="volume"]');
+const volumeField = inquiryForm.querySelector('[name="volume_requirements"]');
+const notesField = inquiryForm.querySelector('[name="notes"]');
+const standardFormCopy = {
+  companyLabel: companyLabel.textContent,
+  companyPlaceholder: companyField.placeholder,
+  volumeLabel: volumeLabel.textContent,
+  volumePlaceholder: volumeField.placeholder,
+  notesPlaceholder: notesField.placeholder
+};
+
+function updateInquiryContext() {
+  const isGrowerRegistration = opportunityField.value === 'Grower registration';
+
+  companyLabel.textContent = isGrowerRegistration ? 'Farm or Estate Name' : standardFormCopy.companyLabel;
+  companyField.placeholder = isGrowerRegistration ? 'Your farm or estate name' : standardFormCopy.companyPlaceholder;
+  volumeLabel.textContent = isGrowerRegistration ? 'Available Coffee Volume' : standardFormCopy.volumeLabel;
+  volumeField.placeholder = isGrowerRegistration ? 'Available volume' : standardFormCopy.volumePlaceholder;
+  notesField.placeholder = isGrowerRegistration
+    ? 'Share your farm location, coffee varieties, growing practices, and harvest details.'
+    : standardFormCopy.notesPlaceholder;
+}
+
+function startGrowerRegistration() {
+  opportunityField.value = 'Grower registration';
+  updateInquiryContext();
+  document.dispatchEvent(new Event('phibean:grower-registration-started'));
+}
 
 function captureTrafficSource(form) {
   const query = new URLSearchParams(window.location.search);
@@ -47,11 +78,21 @@ inquiryForm.addEventListener('submit', async (event) => {
       throw new Error(`Form submission failed (${response.status})`);
     }
 
+    document.dispatchEvent(new CustomEvent('phibean:inquiry-submitted', {
+      detail: { opportunityType: opportunityField.value }
+    }));
+
+    if (opportunityField.value === 'Grower registration') {
+      document.dispatchEvent(new Event('phibean:grower-registration-submitted'));
+    }
+
     inquiryForm.reset();
     captureTrafficSource(inquiryForm);
+    updateInquiryContext();
     successMessage.classList.remove('hidden');
   } catch (error) {
     console.error('Unable to submit form:', error);
+    document.dispatchEvent(new Event('phibean:inquiry-submission-failed'));
     errorMessage.classList.remove('hidden');
   } finally {
     submitButton.disabled = false;
@@ -62,16 +103,32 @@ inquiryForm.addEventListener('submit', async (event) => {
 window.addEventListener('pageshow', () => {
   inquiryForm.reset();
   captureTrafficSource(inquiryForm);
+  updateInquiryContext();
   successMessage.classList.add('hidden');
   errorMessage.classList.add('hidden');
 });
 
+opportunityField.addEventListener('change', (event) => {
+  updateInquiryContext();
+  if (opportunityField.value === 'Grower registration' && event.isTrusted) {
+    document.dispatchEvent(new Event('phibean:grower-registration-started'));
+  }
+});
+
 document.getElementById('visitButton')?.addEventListener('click', () => {
-  const interest = inquiryForm?.querySelector('[name="interest"]');
-  if (interest) interest.value = 'Estate visit';
+  opportunityField.value = 'Estate visit';
+  updateInquiryContext();
 });
 
 document.getElementById('reserveLotButton')?.addEventListener('click', () => {
-  const interest = inquiryForm?.querySelector('[name="interest"]');
-  if (interest) interest.value = 'Spot micro-lot order';
+  opportunityField.value = 'Spot micro-lot order';
+  updateInquiryContext();
 });
+
+document.querySelectorAll('[data-grower-registration]').forEach((link) => {
+  link.addEventListener('click', () => {
+    startGrowerRegistration();
+  });
+});
+
+updateInquiryContext();

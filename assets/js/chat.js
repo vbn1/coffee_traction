@@ -4,74 +4,365 @@ const chatClose = document.getElementById('chatClose');
 const chatMessages = document.getElementById('chatMessages');
 const chatForm = document.getElementById('chatForm');
 const chatInput = document.getElementById('chatInput');
+const quickReplyPanel = document.getElementById('quickReplies');
+const defaultChatPlaceholder = chatInput.placeholder;
 const quickReplyButtons = document.querySelectorAll('.quick-reply');
+const chatInquiryForm = document.getElementById('roasterInquiryForm');
+const chatOpportunityField = chatInquiryForm.querySelector('[name="interest"]');
+let inquiryDraft = null;
+let inquiryStep = null;
+let chatSubmissionPending = false;
 
-const botResponses = {
-  default: 'We grow single-origin Arabica in the foothills of Mullayyanagiri. Current listed lots are Arabica naturals and washed, 50 kg each, with a Jan–Mar harvest window. Ask me about a lot, samples, contracts, pricing, or a farm visit.',
-  availability: 'The current listed lots are 50 kg of Arabica naturals (82+ cup score potential) and 50 kg of Arabica washed (85+ cup score potential). The harvest window is Jan–Mar. Please contact us to confirm availability.',
-  naturals: 'Arabica naturals: 50 kg, with 82+ cup score potential. Harvest window: Jan–Mar. Contact us to confirm current availability and request details.',
-  washed: 'Arabica washed: 50 kg, with 85+ cup score potential. Harvest window: Jan–Mar. Contact us to confirm current availability and request details.',
-  sample: 'Tell us which lot you are interested in and request a sample through the inquiry form. Our team can confirm sample availability and dispatch timing.',
-  contract: 'We can discuss a forward contract for the Jan–Mar harvest. Pricing, quantities, and delivery terms need to be confirmed with our team through an inquiry.',
-  origin: 'Our coffee is single-origin Arabica from the foothills of Mullayyanagiri. The listed lots are processed as naturals and washed.',
-  volume: 'The lots currently listed are 50 kg each: one natural and one washed. Ask our team to confirm availability or discuss a larger requirement.',
-  pricing: 'Prices are not listed here. Send an inquiry with the lot you are interested in and your required quantity so our team can provide current pricing and terms.',
-  visit: 'You are welcome to visit the estate and inspect the lots in person. Use the “Schedule a visit” option in the inquiry form and our team can coordinate the details.'
-};
+const opportunityTypes = [
+  { label: 'Sample request', value: 'Sample request' },
+  { label: 'Spot micro-lot order', value: 'Spot micro-lot order' },
+  { label: 'Annual forward contract', value: 'Annual forward contract' },
+  { label: 'Estate visit', value: 'Estate visit' },
+  { label: 'Grower registration', value: 'Grower registration' }
+];
 
-function addMessage(text, type = 'bot') {
+const responses = [
+  {
+    matches: ['grower', 'farmer', 'register'],
+    text: 'Are you a coffee grower? Share your farm, coffee, and harvest details through our grower registration form.',
+    action: { label: 'Register as a grower', opportunity: 'Grower registration' }
+  },
+  {
+    matches: ['visit', 'estate tour', 'see the farm'],
+    text: 'We can help arrange an estate visit. Send us your preferred dates and we’ll coordinate the details.',
+    action: { label: 'Arrange an estate visit', opportunity: 'Estate visit' }
+  },
+  {
+    matches: ['sample', 'taste', 'try'],
+    text: 'Interested in tasting a lot? Request a sample and tell us which process you prefer. We’ll confirm sample availability and dispatch details.',
+    action: { label: 'Request a sample', opportunity: 'Sample request' }
+  },
+  {
+    matches: ['contract', 'forward', 'annual'],
+    text: 'Planning ahead? Tell us your expected volume and delivery window, and we can discuss a forward contract for the upcoming harvest.',
+    action: { label: 'Discuss a forward contract', opportunity: 'Annual Forward Contract' }
+  },
+  {
+    matches: ['price', 'pricing', 'cost', 'quote'],
+    text: 'Pricing depends on the lot, volume, and delivery terms. Share your requirement and destination, and our team will prepare a quote.',
+    action: { label: 'Request pricing', opportunity: 'Spot micro-lot order' }
+  },
+  {
+    matches: ['volume', 'quantity', 'how many', 'larger order'],
+    text: 'The site currently lists 50 kg each of natural and washed Arabica. Availability can change; include your required volume and we’ll confirm options.',
+    action: { label: 'Share your volume requirement', opportunity: 'Spot micro-lot order' }
+  },
+  {
+    matches: ['natural'],
+    text: 'The listed natural Arabica lot is 50 kg, with 82+ cup-score potential. Ask us to confirm current availability and request its lot details.',
+    action: { label: 'Ask about the natural lot', opportunity: 'Spot micro-lot order' }
+  },
+  {
+    matches: ['washed'],
+    text: 'The listed washed Arabica lot is 50 kg, with 85+ cup-score potential. Ask us to confirm current availability and request its lot details.',
+    action: { label: 'Ask about the washed lot', opportunity: 'Spot micro-lot order' }
+  },
+  {
+    matches: ['origin', 'mullayyanagiri', 'where', 'traceability'],
+    text: 'Our single-origin Arabica comes from an estate in the foothills of Mullayyanagiri, India. We share lot and process details to help you understand each coffee’s origin.',
+    action: { label: 'Ask about sourcing', opportunity: 'Spot micro-lot order' }
+  },
+  {
+    matches: ['avail', 'lot', 'arabica', 'coffee'],
+    text: 'The listed offerings are natural and washed single-origin Arabica, 50 kg each. Tell us the process and volume you need; we’ll confirm what’s currently available.',
+    action: { label: 'Ask about available lots', opportunity: 'Spot micro-lot order' }
+  }
+];
+
+function addButtons(wrapper, buttons) {
+  if (!buttons?.length) return;
+
+  const group = document.createElement('div');
+  group.className = 'mt-3 flex flex-wrap gap-2';
+
+  for (const { label, onClick, primary = false } of buttons) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `rounded-full border px-3 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-phibean-200 ${
+      primary
+        ? 'border-phibean-300 bg-phibean-300 text-stone-950'
+        : 'border-white/20 text-phibean-200 hover:bg-white/10'
+    }`;
+    button.textContent = label;
+    button.addEventListener('click', () => {
+      onClick();
+      group.remove();
+    });
+    group.appendChild(button);
+  }
+
+  wrapper.appendChild(group);
+}
+
+function addMessage(text, type = 'bot', buttons = []) {
   const wrapper = document.createElement('div');
   const isUser = type === 'user';
   wrapper.className = `max-w-[85%] rounded-2xl p-3 text-sm leading-6 ${
     isUser ? 'ml-auto rounded-br-md bg-phibean-300 text-stone-950' : 'rounded-bl-md bg-white/5 text-stone-100'
   }`;
-  wrapper.textContent = text;
+
+  const message = document.createElement('p');
+  message.className = 'm-0 whitespace-pre-line';
+  message.textContent = text;
+  wrapper.appendChild(message);
+  addButtons(wrapper, buttons);
   chatMessages.appendChild(wrapper);
   chatMessages.scrollTop = chatMessages.scrollHeight;
+  return wrapper;
 }
 
 function generateBotReply(input) {
   const normalized = input.toLowerCase();
+  const response = responses.find(({ matches }) => matches.some((term) => normalized.includes(term)));
 
-  if (normalized.includes('visit') || normalized.includes('estate') || normalized.includes('farm')) return botResponses.visit;
-  if (normalized.includes('sample')) return botResponses.sample;
-  if (normalized.includes('contract') || normalized.includes('forward')) return botResponses.contract;
-  if (normalized.includes('price') || normalized.includes('pricing') || normalized.includes('cost') || normalized.includes('quote')) return botResponses.pricing;
-  if (normalized.includes('volume') || normalized.includes('quantity') || normalized.includes('how many')) return botResponses.volume;
-  if (normalized.includes('natural')) return botResponses.naturals;
-  if (normalized.includes('washed')) return botResponses.washed;
-  if (normalized.includes('origin') || normalized.includes('mullayyanagiri') || normalized.includes('where')) return botResponses.origin;
-  if (normalized.includes('avail') || normalized.includes('lot') || normalized.includes('arabica')) return botResponses.availability;
+  return response || {
+    text: 'I can help with available lots, samples, pricing, forward contracts, estate visits, or grower registration. What would you like to know?',
+    action: null
+  };
+}
 
-  return botResponses.default;
+function askForOpportunity() {
+  inquiryStep = 'opportunity';
+  addMessage('What can we help you with?', 'bot', opportunityTypes.map(({ label, value }) => ({
+    label,
+    onClick: () => {
+      addMessage(label, 'user');
+      selectOpportunity(value);
+    }
+  })));
+}
+
+function selectOpportunity(opportunity) {
+  if (!opportunityTypes.some(({ value }) => value === opportunity)) {
+    throw new Error(`Unsupported inquiry opportunity: ${opportunity}`);
+  }
+  inquiryDraft.opportunityType = opportunity;
+  if (opportunity === 'Grower registration') {
+    document.dispatchEvent(new Event('phibean:grower-registration-started'));
+  }
+  inquiryStep = 'name';
+  addMessage('First, what is your name?');
+}
+
+function startInquiry(opportunity = '') {
+  inquiryDraft = {
+    opportunityType: '',
+    name: '',
+    company: '',
+    email: '',
+    volume: '',
+    unit: 'kg',
+    notes: ''
+  };
+  chatInput.placeholder = 'Type your answer here';
+
+  if (opportunity && opportunityTypes.some(({ value }) => value === opportunity)) {
+    selectOpportunity(opportunity);
+  } else {
+    askForOpportunity();
+  }
+}
+
+function askNextQuestion() {
+  const isGrower = inquiryDraft.opportunityType === 'Grower registration';
+  const prompts = {
+    company: isGrower ? 'What is the name of your farm or estate?' : 'What is your roastery or company name?',
+    email: 'What professional email address should we use to reply?',
+    volume: isGrower
+      ? 'How much coffee do you have available? Enter a whole number and unit, for example “500 kg” or “2 tonnes”.'
+      : 'What volume do you need? Enter a whole number and unit, for example “50 kg” or “1 tonne”.',
+    notes: isGrower
+      ? 'Where is your farm, and what coffee varieties and harvest details would you like to share? Type “skip” if you have nothing to add.'
+      : 'Any preferred process, destination, or timing? Type “skip” if you have nothing to add.'
+  };
+
+  addMessage(prompts[inquiryStep]);
+}
+
+function parseVolume(value) {
+  const match = value.trim().match(/^([1-9]\d*)\s*(kg|kgs|kilograms?|tonnes?|tons?|t)?$/i);
+  if (!match) return null;
+
+  const unit = match[2] || 'kg';
+  return {
+    amount: match[1],
+    unit: /^(tonnes?|tons?|t)$/i.test(unit) ? 'tonnes' : 'kg'
+  };
+}
+
+function showInquiryReview() {
+  inquiryStep = 'review';
+  const volumeUnit = inquiryDraft.unit === 'kg' ? 'kg' : 'tonnes';
+  const notesLine = inquiryDraft.notes ? `\nDetails: ${inquiryDraft.notes}` : '';
+  addMessage(
+    `Please review your inquiry:\nName: ${inquiryDraft.name}\nCompany/Farm: ${inquiryDraft.company}\nEmail: ${inquiryDraft.email}\nOpportunity: ${inquiryDraft.opportunityType}\nVolume: ${inquiryDraft.volume} ${volumeUnit}${notesLine}`,
+    'bot',
+    [
+      { label: 'Confirm and send inquiry', onClick: submitChatInquiry, primary: true },
+      { label: 'Cancel', onClick: cancelInquiry }
+    ]
+  );
+}
+
+function processInquiryAnswer(value) {
+  if (inquiryStep === 'review') {
+    if (/^(cancel|stop)$/i.test(value.trim())) {
+      cancelInquiry();
+    } else {
+      addMessage('Please use “Confirm and send inquiry” after reviewing, or choose “Cancel”.');
+    }
+    return;
+  }
+
+  if (inquiryStep === 'name') {
+    inquiryDraft.name = value;
+    inquiryStep = 'company';
+  } else if (inquiryStep === 'company') {
+    inquiryDraft.company = value;
+    inquiryStep = 'email';
+  } else if (inquiryStep === 'email') {
+    const emailField = chatInquiryForm.querySelector('[name="email"]');
+    emailField.value = value;
+    if (!emailField.validity.valid) {
+      emailField.value = '';
+      addMessage('That email address doesn’t look valid. Please enter it again (for example, you@company.com).');
+      return;
+    }
+    inquiryDraft.email = value;
+    inquiryStep = 'volume';
+  } else if (inquiryStep === 'volume') {
+    const volume = parseVolume(value);
+    if (!volume) {
+      addMessage('Please enter a whole-number volume with kg or tonnes, for example “50 kg”.');
+      return;
+    }
+    inquiryDraft.volume = volume.amount;
+    inquiryDraft.unit = volume.unit;
+    inquiryStep = 'notes';
+  } else if (inquiryStep === 'notes') {
+    inquiryDraft.notes = /^(skip|none|no)$/i.test(value.trim()) ? '' : value;
+    showInquiryReview();
+    return;
+  }
+
+  askNextQuestion();
+}
+
+function cancelInquiry() {
+  inquiryDraft = null;
+  inquiryStep = null;
+  chatInput.placeholder = defaultChatPlaceholder;
+  addMessage('No inquiry was sent. You can start again whenever you’re ready.');
+}
+
+function submitChatInquiry() {
+  if (chatSubmissionPending) return;
+
+  const fields = {
+    name: inquiryDraft.name,
+    company: inquiryDraft.company,
+    email: inquiryDraft.email,
+    interest: inquiryDraft.opportunityType,
+    volume_requirements: inquiryDraft.volume,
+    volume_unit: inquiryDraft.unit,
+    notes: inquiryDraft.notes
+  };
+
+  for (const [name, value] of Object.entries(fields)) {
+    chatInquiryForm.querySelector(`[name="${name}"]`).value = value;
+  }
+
+  chatOpportunityField.dispatchEvent(new Event('change', { bubbles: true }));
+  if (!chatInquiryForm.reportValidity()) {
+    document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+    addMessage('Please check the highlighted inquiry form fields before submitting.');
+    return;
+  }
+
+  chatSubmissionPending = true;
+  chatInquiryForm.requestSubmit();
+  addMessage('Sending your inquiry securely…');
+}
+
+document.addEventListener('phibean:inquiry-submitted', () => {
+  if (!chatSubmissionPending) return;
+
+  chatSubmissionPending = false;
+  inquiryDraft = null;
+  inquiryStep = null;
+  chatInput.placeholder = defaultChatPlaceholder;
+  addMessage('Your inquiry has been sent. Thank you — the PhiBean team will be in touch.');
+});
+
+document.addEventListener('phibean:inquiry-submission-failed', () => {
+  if (!chatSubmissionPending) return;
+
+  chatSubmissionPending = false;
+  addMessage('We couldn’t send your inquiry. Your details are still in the form; please check the form message and try again.');
+});
+
+function respondTo(input) {
+  const response = generateBotReply(input);
+  const buttons = response.action
+    ? [{
+        label: response.action.label,
+        onClick: () => startInquiry(response.action.opportunity),
+        primary: true
+      }]
+    : [];
+  addMessage(response.text, 'bot', buttons);
 }
 
 function toggleChat(open) {
   chatPanel.classList.toggle('hidden', !open);
+  chatToggle.setAttribute('aria-expanded', String(open));
+  if (open) chatInput.focus();
 }
 
 chatToggle.addEventListener('click', () => {
-  const isHidden = chatPanel.classList.contains('hidden');
-  toggleChat(isHidden);
+  toggleChat(chatPanel.classList.contains('hidden'));
 });
 
 chatClose.addEventListener('click', () => toggleChat(false));
 
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && !chatPanel.classList.contains('hidden')) {
+    toggleChat(false);
+    chatToggle.focus();
+  }
+});
+
 quickReplyButtons.forEach((button) => {
   button.addEventListener('click', () => {
     const value = button.textContent.trim();
+    quickReplyPanel.classList.add('hidden');
     addMessage(value, 'user');
-    addMessage(generateBotReply(value), 'bot');
+
+    if (button.dataset.action === 'grower-registration') {
+      startInquiry('Grower registration');
+    } else if (button.dataset.action === 'start-inquiry') {
+      startInquiry();
+    } else {
+      respondTo(value);
+    }
   });
 });
 
 chatForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const value = chatInput.value.trim();
-
   if (!value) return;
 
   addMessage(value, 'user');
-  addMessage(generateBotReply(value), 'bot');
+  if (inquiryDraft) {
+    processInquiryAnswer(value);
+  } else {
+    respondTo(value);
+  }
   chatInput.value = '';
 });

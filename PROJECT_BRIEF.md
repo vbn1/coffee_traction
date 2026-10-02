@@ -52,22 +52,25 @@ Create a refined, mobile-first B2B landing page for a specialty coffee farm that
 - Form integration: Netlify Forms or Web3Forms
 - Asset handling: direct-image logo file for clean brand fidelity and consistent export use
 
-## Lead capture direction
-Use the Web3Forms inquiry form for grower-to-business procurement. Collect:
-- Name and roastery/company name
-- Professional email
-- Opportunity type: sample request, spot micro-lot order, annual forward contract, or estate visit
-- Required volume and unit
-- Optional request details
+## Grower stories and lead capture
+- Show grower and estate profiles as individual stories that can be extended with additional growers
+- Use the shared Web3Forms inquiry form for both grower-to-business sourcing and grower registration
+- Registration links select the grower opportunity and adapt the company, volume, and request-detail prompts to collect farm information
+- Collect name, farm/estate or roastery/company name, and professional email
+- Opportunity type: sample request, spot micro-lot order, annual forward contract, estate visit, or grower registration
+- Required volume and unit, used as required or available coffee volume
+- Request details for sourcing requirements or grower location, coffee varieties, growing practices, and harvest
 - Traffic source, referrer, landing path, and UTM campaign fields (hidden)
 
 ## Chatbot behavior
-The chatbot should answer commonly high-intent buyer questions such as:
+The chatbot answers commonly high-intent buyer questions such as:
 - Micro-lot availability
+- Grower stories and registration
 - Sample request
 - Forward contracts
 - Origin preferences and lot types
 - Pricing and volume guidance
+- It can collect inquiry details conversationally, display a review summary, and submit to the shared inquiry form only after the visitor confirms
 
 It should feel consultative and polished, guiding visitors toward inquiry submission without friction.
 
@@ -87,7 +90,7 @@ It should feel consultative and polished, guiding visitors toward inquiry submis
 
 ## Deployment checklist
 - Run `npm ci` and `npm run build:css` before deploying the static site
-- Add `vbn1.github.io` as the tracked domain in Umami, then replace `YOUR_WEBSITE_ID` in the head script and set the read-only share token in `assets/js/analytics.js` to enable analytics and real visitor counts
+- Add `vbn1.github.io` as the tracked domain in Umami and configure the website ID in the head script to enable page-view, inquiry-submission, and grower-registration event tracking
 - For TinyURL attribution, create the short link with a destination URL containing UTM parameters, for example `https://vbn1.github.io/coffee_traction/?utm_source=tinyurl&utm_medium=shortlink&utm_campaign=campaign-name`
 - Disclose analytics collection in the site's privacy notice
 - Push to GitHub
