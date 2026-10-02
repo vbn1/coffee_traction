@@ -91,7 +91,7 @@ It should feel consultative and polished, guiding visitors toward inquiry submis
 ## Deployment checklist
 - Run `npm ci` and `npm run build:css` before deploying the static site
 - Add `vbn1.github.io` as the tracked domain in Umami and configure the website ID in the head script to enable page-view, inquiry-submission, and grower-registration event tracking
-- For TinyURL attribution, create the short link with a destination URL containing UTM parameters, for example `https://vbn1.github.io/coffee_traction/?utm_source=tinyurl&utm_medium=shortlink&utm_campaign=campaign-name`
+- For TinyURL attribution, create the short link with a destination URL containing UTM parameters, for example `https://vbn1.github.io/phibeancoffees/?utm_source=tinyurl&utm_medium=shortlink&utm_campaign=campaign-name`
 - Disclose analytics collection in the site's privacy notice
 - Push to GitHub
 - Connect repository to Netlify or Cloudflare Pages

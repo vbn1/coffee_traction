@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://vbn1.github.io/coffee_traction/sitemap.xml
+Sitemap: https://vbn1.github.io/phibeancoffees/sitemap.xml
