@@ -23,6 +23,11 @@ const opportunityTypes = [
 
 const responses = [
   {
+    matches: ['rayarakana', 'estate', 'hydro', 'century', 'family farm', 'story', 'stories'],
+    text: 'The best way to get to know our growers is to see their farms. Share your preferred dates and we’ll arrange an estate visit.',
+    action: { label: 'Arrange an estate visit', opportunity: 'Estate visit' }
+  },
+  {
     matches: ['grower', 'farmer', 'register'],
     text: 'Are you a coffee grower? Share your farm, coffee, and harvest details through our grower registration form.',
     action: { label: 'Register as a grower', opportunity: 'Grower registration' }
@@ -98,7 +103,7 @@ function addButtons(wrapper, buttons) {
   for (const { label, onClick, primary = false } of buttons) {
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = `rounded-full border px-3 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-phibean-200 ${
+    button.className = `rounded border px-3 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-phibean-200 ${
       primary
         ? 'border-phibean-300 bg-phibean-300 text-stone-950'
         : 'border-white/20 text-phibean-200 hover:bg-white/10'
@@ -117,8 +122,8 @@ function addButtons(wrapper, buttons) {
 function addMessage(text, type = 'bot', buttons = []) {
   const wrapper = document.createElement('div');
   const isUser = type === 'user';
-  wrapper.className = `max-w-[85%] rounded-2xl p-3 text-sm leading-6 ${
-    isUser ? 'ml-auto rounded-br-md bg-phibean-300 text-stone-950' : 'rounded-bl-md bg-white/5 text-stone-100'
+  wrapper.className = `max-w-[85%] rounded p-3 text-sm leading-6 ${
+    isUser ? 'ml-auto bg-phibean-300 text-stone-950' : 'bg-white/5 text-stone-100'
   }`;
 
   const message = document.createElement('p');
@@ -131,9 +136,20 @@ function addMessage(text, type = 'bot', buttons = []) {
   return wrapper;
 }
 
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Match terms at the start of a word so "try" doesn't fire on "country" or "lot" on "plot".
+// A term still matches longer forms of itself ("process" -> "processing", "visit" -> "visits").
+const responseMatchers = responses.map((response) => ({
+  response,
+  patterns: response.matches.map((term) => new RegExp(`\\b${escapeRegExp(term)}`, 'i'))
+}));
+
 function generateBotReply(input) {
-  const normalized = input.toLowerCase();
-  const response = responses.find(({ matches }) => matches.some((term) => normalized.includes(term)));
+  const match = responseMatchers.find(({ patterns }) => patterns.some((pattern) => pattern.test(input)));
+  const response = match?.response;
 
   return response || {
     text: 'I can help with available lots, samples, pricing, forward contracts, estate visits, or grower registration. What would you like to know?',

@@ -1,0 +1,7 @@
+# GitHub Pages (Jekyll) leaves these files out of the published site.
+exclude:
+  - PROJECT_BRIEF.md
+  - package.json
+  - package-lock.json
+  - tailwind.config.js
+  - node_modules
