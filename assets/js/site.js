@@ -120,9 +120,11 @@ document.getElementById('visitButton')?.addEventListener('click', () => {
   updateInquiryContext();
 });
 
-document.getElementById('reserveLotButton')?.addEventListener('click', () => {
-  opportunityField.value = 'Spot micro-lot order';
-  updateInquiryContext();
+document.querySelectorAll('[data-opportunity]').forEach((link) => {
+  link.addEventListener('click', () => {
+    opportunityField.value = link.dataset.opportunity;
+    updateInquiryContext();
+  });
 });
 
 document.querySelectorAll('[data-grower-registration]').forEach((link) => {

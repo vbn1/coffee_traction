@@ -29,7 +29,7 @@ const responses = [
   },
   {
     matches: ['visit', 'estate tour', 'see the farm'],
-    text: 'We can help arrange an estate visit. Send us your preferred dates and we’ll coordinate the details.',
+    text: 'You can enquire about an estate visit. Share your preferred dates and we’ll confirm availability and arrangements.',
     action: { label: 'Arrange an estate visit', opportunity: 'Estate visit' }
   },
   {
@@ -40,36 +40,51 @@ const responses = [
   {
     matches: ['contract', 'forward', 'annual'],
     text: 'Planning ahead? Tell us your expected volume and delivery window, and we can discuss a forward contract for the upcoming harvest.',
-    action: { label: 'Discuss a forward contract', opportunity: 'Annual Forward Contract' }
+    action: { label: 'Discuss a forward contract', opportunity: 'Annual forward contract' }
   },
   {
     matches: ['price', 'pricing', 'cost', 'quote'],
-    text: 'Pricing depends on the lot, volume, and delivery terms. Share your requirement and destination, and our team will prepare a quote.',
+    text: 'Pricing depends on the lot, volume, and delivery terms. Share your requirement and destination, and we’ll confirm pricing for the available options.',
     action: { label: 'Request pricing', opportunity: 'Spot micro-lot order' }
   },
   {
     matches: ['volume', 'quantity', 'how many', 'larger order'],
-    text: 'The site currently lists 50 kg each of natural and washed Arabica. Availability can change; include your required volume and we’ll confirm options.',
+    text: 'Our standard lot size is 30 kg. Current quantities and available variety/process combinations are confirmed per lot, so share the volume you need and we’ll check.',
     action: { label: 'Share your volume requirement', opportunity: 'Spot micro-lot order' }
   },
   {
-    matches: ['natural'],
-    text: 'The listed natural Arabica lot is 50 kg, with 82+ cup-score potential. Ask us to confirm current availability and request its lot details.',
-    action: { label: 'Ask about the natural lot', opportunity: 'Spot micro-lot order' }
+    matches: ['cauvery', 's795', 'selection 9', 'chandragiri', 'variety', 'varieties'],
+    text: 'The varieties in the PhiBean offering are Cauvery, S795, Selection 9, and Chandragiri. Ask us to confirm which varieties are in the current lots.',
+    action: { label: 'Ask about available lots', opportunity: 'Spot micro-lot order' }
   },
   {
-    matches: ['washed'],
-    text: 'The listed washed Arabica lot is 50 kg, with 85+ cup-score potential. Ask us to confirm current availability and request its lot details.',
-    action: { label: 'Ask about the washed lot', opportunity: 'Spot micro-lot order' }
+    matches: ['washed', 'natural', 'honey', 'process', 'processing'],
+    text: 'The available processing styles are Washed, Natural, and Honey. Which process is offered depends on the current lot; we can confirm its details and cup information.',
+    action: { label: 'Ask about current lots', opportunity: 'Spot micro-lot order' }
   },
   {
-    matches: ['origin', 'mullayyanagiri', 'where', 'traceability'],
-    text: 'Our single-origin Arabica comes from an estate in the foothills of Mullayyanagiri, India. We share lot and process details to help you understand each coffee’s origin.',
+    matches: ['altitude', 'elevation', 'masl', 'high altitude'],
+    text: 'The farms are at 1,400–1,600 metres above sea level beneath a natural forest canopy.',
     action: { label: 'Ask about sourcing', opportunity: 'Spot micro-lot order' }
   },
   {
-    matches: ['avail', 'lot', 'arabica', 'coffee'],
-    text: 'The listed offerings are natural and washed single-origin Arabica, 50 kg each. Tell us the process and volume you need; we’ll confirm what’s currently available.',
+    matches: ['harvest', 'season', 'when'],
+    text: 'The harvest window is December–March. Share your timing and volume if you are planning a sample or forward contract.',
+    action: { label: 'Discuss a forward contract', opportunity: 'Annual forward contract' }
+  },
+  {
+    matches: ['cup profile', 'cupping', 'score', 'flavour', 'flavor', 'tasting notes'],
+    text: 'We do not assume cup scores or flavour notes. Ask us for the verified cupping information for a specific current lot, or tell us your preferred cup profile.',
+    action: { label: 'Share your cup profile', opportunity: 'Sample request' }
+  },
+  {
+    matches: ['origin', 'mullayanagiri', 'seethalayanagiri', 'rudragiri', 'where', 'traceability'],
+    text: 'PhiBean coffees come from farms in the valleys of Mullayanagiri, Seethalayanagiri, and Rudragiri in Karnataka, India. Coffee is processed at the farm, and lot details can be confirmed for each offering.',
+    action: { label: 'Ask about sourcing', opportunity: 'Spot micro-lot order' }
+  },
+  {
+    matches: ['avail', 'lot', 'coffee'],
+    text: 'PhiBean offers Cauvery, S795, Selection 9, and Chandragiri, with Washed, Natural, and Honey processes. Standard lot size is 30 kg; ask us to confirm current availability, variety/process combinations, and verified cup details.',
     action: { label: 'Ask about available lots', opportunity: 'Spot micro-lot order' }
   }
 ];
@@ -175,10 +190,10 @@ function askNextQuestion() {
     email: 'What professional email address should we use to reply?',
     volume: isGrower
       ? 'How much coffee do you have available? Enter a whole number and unit, for example “500 kg” or “2 tonnes”.'
-      : 'What volume do you need? Enter a whole number and unit, for example “50 kg” or “1 tonne”.',
+      : 'What volume do you need? The standard lot size is 30 kg. Enter a whole number and unit, for example “30 kg” or “1 tonne”.',
     notes: isGrower
       ? 'Where is your farm, and what coffee varieties and harvest details would you like to share? Type “skip” if you have nothing to add.'
-      : 'Any preferred process, destination, or timing? Type “skip” if you have nothing to add.'
+      : 'Any preferred variety, process, cup profile, sample or delivery requirements, destination, or timing? Type “skip” if you have nothing to add.'
   };
 
   addMessage(prompts[inquiryStep]);
@@ -238,7 +253,7 @@ function processInquiryAnswer(value) {
   } else if (inquiryStep === 'volume') {
     const volume = parseVolume(value);
     if (!volume) {
-      addMessage('Please enter a whole-number volume with kg or tonnes, for example “50 kg”.');
+      addMessage('Please enter a whole-number volume with kg or tonnes, for example “30 kg”.');
       return;
     }
     inquiryDraft.volume = volume.amount;
